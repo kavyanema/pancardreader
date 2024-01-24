@@ -10,8 +10,6 @@ def extract_text_from_image(image_path):
 image_path = str(input("Enter path to PAN Card Image: "))
 text = extract_text_from_image(image_path)
 
-print(text)
-
 name_find = re.compile(r'INCOMETAX\s*DEPARTMENT[^\n]*\n(?:.*?\bName[^\n]*\n|\n\s*)\s*([A-Z\s.]+)\s*\n', re.DOTALL)
 pan_find = re.compile(r'\b([A-Z]{5}\d{4}[A-Z]{1})\b')
 DOB_find = re.compile(r'\b(\d{2}/\d{2}/\d{4})\b')
@@ -39,6 +37,7 @@ if DOB_match:
 else:
     print("Date of Birth not found")
 
-
-
-
+if DOB_found and pan_number:
+    print("It is a pancard")
+else:
+    print("It is not a pan card")
