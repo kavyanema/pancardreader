@@ -1,41 +1,43 @@
 import pytesseract
 from PIL import Image
+import re
 
 def extract_text_from_image(image_path):
-   image = Image.open(image_path)
-   text = pytesseract.image_to_string(image)
-   return text
-
-def is_pan_card(text):
-   keywords = ['GOVT', 'INDIA', 'INCOME']
-   if all(keyword in text for keyword in keywords):
-       return "It is a PAN card"
-   else:
-       return "It is not a PAN card"
+    image = Image.open(image_path)
+    text = pytesseract.image_to_string(image)
+    return text
 
 image_path = str(input("Enter path to PAN Card Image: "))
 text = extract_text_from_image(image_path)
 
-pan_info_file = "pan_info.txt"
-with open(pan_info_file, 'w') as file:
-   file.write(text)
+print(text)
 
-with open(pan_info_file, 'r') as file:
-   file_content = file.readlines()
-   print("Content of pan_info.txt:", file_content)
+name_find = re.compile(r'INCOMETAX\s*DEPARTMENT[^\n]*\n(?:.*?\bName[^\n]*\n|\n\s*)\s*([A-Z\s.]+)\s*\n', re.DOTALL)
+pan_find = re.compile(r'\b([A-Z]{5}\d{4}[A-Z]{1})\b')
+DOB_find = re.compile(r'\b(\d{2}/\d{2}/\d{4})\b')
 
-check = is_pan_card(text)
-print(check)
 
-name_extracted = file_content[8].strip()
-print("Name is:", name_extracted)
+name_match = name_find.search(text)
+pan_match = pan_find.search(text)
+DOB_match = DOB_find.search(text)
 
-DOB= file_content[17].strip()
-print("DOB is:",DOB)
+if name_match:
+    name = name_match.group(1).strip()
+    print("Name:", name)
+else:
+    print("No name found.")
 
-Pan_num=file_content[5].strip()
-print("Pan number is:",Pan_num)
+if pan_match:
+    pan_number = pan_match.group(0)
+    print("PAN NUMBER IS:", pan_number)
+else:
+    print("Pan number not found")
 
+if DOB_match:
+    DOB_found = DOB_match.group(0)
+    print("Date of Birth is:", DOB_found)
+else:
+    print("Date of Birth not found")
 
 
 
