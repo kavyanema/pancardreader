@@ -86,9 +86,8 @@ def extract_text_from_image(image_path):
             mx_area = area
     x,y,w,h = mx
     filename, _ = os.path.splitext(os.path.basename(image))
-    # Crop and save
+    # Extract text
     roi=img[y:y+h,x:x+w]
-    cv2.imwrite(f'Image_crop_{filename}.jpg', roi)
     results = text_reader.readtext(roi )
     names = []
     dates = []
